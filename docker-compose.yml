@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  app:
+    image: ppaquin/dgv-api-events:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - API_ADDRESS=0.0.0.0
+      - API_PORT=8080
+      - MONGO_URI=mongodb://db:27017
+      - JWT_SECRET=xxx
+    networks:
+      - dgv-api-events-network
+  db:
+    image: mongo:latest
+#    ports:
+#      - "27017:27017"
+    volumes:
+      - dgv_api_events_db_data:/data/db
+    networks:
+      - dgv-api-events-network
+volumes:
+  dgv_api_events_db_data:
+networks:
+  dgv-api-events-network:
+#    driver: bridge

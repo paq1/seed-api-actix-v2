@@ -2,6 +2,7 @@ use crate::api::todos::services::TodosServiceImpl;
 use crate::api::todos::todos_dbo::{TodoDboEvent, TodoDboState};
 use crate::api::todos::todos_event_mongo_repository::TodosEventMongoRepository;
 use crate::api::todos::todos_mongo_dao::{TodosEventMongoDAO, TodosMongoDAO};
+use crate::api::todos::todos_mongo_repository::MongoTodosRepository;
 use crate::core::todos::command_handler::create_handler::TodoCreateHandler;
 use crate::core::todos::command_handler::disable_handler::TodoDisableHandler;
 use crate::core::todos::command_handler::update_handler::TodoUpdateHandler;
@@ -17,7 +18,6 @@ use framework_cqrs_lib::cqrs::core::event_sourcing::CommandHandler;
 use framework_cqrs_lib::cqrs::core::repositories::events::RepositoryEvents;
 use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
 use framework_cqrs_lib::cqrs::infra::daos::dbos::{EntityDBO, EventDBO};
-use framework_cqrs_lib::cqrs::infra::repositories::mongo_entity_repository::MongoEntityRepository;
 use futures::lock::Mutex;
 use std::sync::Arc;
 
@@ -39,7 +39,7 @@ impl TodosComponent {
 
         // repo
         let store = Arc::new(
-            MongoEntityRepository {
+            MongoTodosRepository {
                 dao: Arc::clone(&dao_store)
             }
         );

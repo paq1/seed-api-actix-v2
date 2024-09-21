@@ -5,7 +5,7 @@ use crate::core::todos::data::todo_data::TodoData;
 use framework_cqrs_lib::cqrs::infra::repositories::mongo_entity_repository::{CanTransform, MongoEntityRepository};
 use crate::core::todos::repositories::CustomTodosRepository;
 
-type MongoTodosRepository = MongoEntityRepository<TodoDboState>;
+pub type MongoTodosRepository = MongoEntityRepository<TodoDboState>;
 
 impl CustomTodosRepository for MongoTodosRepository {
 

@@ -1,4 +1,4 @@
-use utoipa::openapi::security::{HttpAuthScheme, HttpBuilder, SecurityScheme};
+use utoipa::openapi::security::{ApiKey, ApiKeyValue, HttpAuthScheme, HttpBuilder, SecurityScheme};
 use utoipa::Modify;
 
 use crate::api::todos::routes::read_routes::__path_fetch_events_events;
@@ -7,6 +7,7 @@ use crate::api::todos::routes::read_routes::__path_fetch_one_event;
 use crate::api::todos::routes::write_routes::__path_disable_one_event;
 use crate::api::todos::routes::write_routes::__path_insert_one_event;
 use crate::api::todos::routes::write_routes::__path_update_one_event;
+use crate::api::todos::routes::exemple_wit_api_key_routes::__path_exemple_api_key;
 use crate::models::todos::commands::*;
 use crate::models::todos::views::*;
 use framework_cqrs_lib::cqrs::core::repositories::query::{InfoPaged, Page};
@@ -23,6 +24,7 @@ use framework_cqrs_lib::cqrs::models::views::DataWrapperView;
         update_one_event,
         disable_one_event,
         fetch_events_events,
+        exemple_api_key,
     ),
     components(
         schemas(
@@ -55,6 +57,10 @@ impl Modify for SecurityAddon {
                     .bearer_format("JWT")
                     .build()
             ),
+        );
+        components.add_security_scheme(
+            "api_key_auth",
+            SecurityScheme::ApiKey(ApiKey::Header(ApiKeyValue::new("X-API-KEY"))),
         )
     }
 }

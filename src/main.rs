@@ -15,6 +15,7 @@ use crate::api::swagger::ApiDoc;
 use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
 use framework_cqrs_lib::cqrs::models::errors::StandardHttpError;
 use log::info;
+use crate::api::todos::routes::exemple_wit_api_key_routes::exemple_api_key;
 
 mod core;
 mod api;
@@ -27,7 +28,7 @@ async fn main() -> std::io::Result<()> {
 
     info!("lancement du server");
 
-    // todos ontology
+    // todos aggregat
     let authentication_component = Arc::new(AuthenticationComponent::new().unwrap());
     let todo_component = TodosComponent::new(&authentication_component.clone()).await;
 
@@ -70,6 +71,7 @@ async fn main() -> std::io::Result<()> {
             .service(insert_one_event)
             .service(update_one_event)
             .service(disable_one_event)
+            .service(exemple_api_key)
     })
         .workers(2)
         .bind((api_address.clone(), api_port.clone()))?

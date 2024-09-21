@@ -1,8 +1,7 @@
+use crate::api::todos::services::TodosServiceImpl;
 use crate::api::todos::todos_dbo::{TodoDboEvent, TodoDboState};
 use crate::api::todos::todos_event_mongo_repository::TodosEventMongoRepository;
-use crate::api::todos::todos_mongo_dao::{EventsEventMongoDAO, EventsMongoDAO};
-use crate::api::todos::todos_mongo_repository::TodosMongoRepository;
-use crate::api::todos::services::TodosServiceImpl;
+use crate::api::todos::todos_mongo_dao::{TodosEventMongoDAO, TodosMongoDAO};
 use crate::core::todos::command_handler::create_handler::TodoCreateHandler;
 use crate::core::todos::command_handler::disable_handler::TodoDisableHandler;
 use crate::core::todos::command_handler::update_handler::TodoUpdateHandler;
@@ -18,6 +17,7 @@ use framework_cqrs_lib::cqrs::core::event_sourcing::CommandHandler;
 use framework_cqrs_lib::cqrs::core::repositories::events::RepositoryEvents;
 use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
 use framework_cqrs_lib::cqrs::infra::daos::dbos::{EntityDBO, EventDBO};
+use framework_cqrs_lib::cqrs::infra::repositories::mongo_entity_repository::MongoEntityRepository;
 use futures::lock::Mutex;
 use std::sync::Arc;
 
@@ -33,16 +33,17 @@ impl TodosComponent {
         let dbname = "seedv2todos";
 
         let dao_store: Arc<Mutex<dyn DAO<EntityDBO<TodoDboState, String>, String>>> =
-            Arc::new(Mutex::new(EventsMongoDAO::new(dbname, "todos_store_actix").await));
+            Arc::new(Mutex::new(TodosMongoDAO::new(dbname, "todos_store_actix").await));
         let dao_journal: Arc<Mutex<dyn DAO<EventDBO<TodoDboEvent, String>, String>>> =
-            Arc::new(Mutex::new(EventsEventMongoDAO::new(dbname, "todos_journal_actix").await));
+            Arc::new(Mutex::new(TodosEventMongoDAO::new(dbname, "todos_journal_actix").await));
 
         // repo
         let store = Arc::new(
-            TodosMongoRepository {
+            MongoEntityRepository {
                 dao: Arc::clone(&dao_store)
             }
         );
+
         let journal: Arc<dyn RepositoryEvents<TodosEvents, String>> = Arc::new(
             TodosEventMongoRepository {
                 dao: Arc::clone(&dao_journal)

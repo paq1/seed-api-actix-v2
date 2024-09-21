@@ -1,21 +1,32 @@
+use futures::lock::Mutex;
 use std::sync::Arc;
 
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
+
+
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 use api::todos::routes::read_routes::{fetch_many_events, fetch_one_event};
 use api::todos::routes::write_routes::{insert_one_event, update_one_event};
 
-use crate::api::todos::todos_component::TodosComponent;
+use crate::api::framework::api_key::dao::MongoApiKeyDAO;
+use crate::api::framework::api_key::dbo::ApiKeyDbo;
+use crate::api::framework::api_key::mongo_repository::MongoApiKeyRepository;
+use crate::api::framework::api_key::service::ApiKeyServiceImpl;
+use crate::api::swagger::ApiDoc;
+use crate::api::todos::routes::exemple_wit_api_key_routes::{create_api_key, exemple_api_key};
 use crate::api::todos::routes::read_routes::{fetch_events_events, fetch_one_event_event};
 use crate::api::todos::routes::write_routes::disable_one_event;
-use crate::api::swagger::ApiDoc;
+use crate::api::todos::todos_component::TodosComponent;
+use crate::core::framework::api_key::service::ApiKeyService;
 use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
+
+
+use framework_cqrs_lib::cqrs::infra::repositories::mongo_entity_repository::MongoEntityRepository;
 use framework_cqrs_lib::cqrs::models::errors::StandardHttpError;
 use log::info;
-use crate::api::todos::routes::exemple_wit_api_key_routes::exemple_api_key;
 
 mod core;
 mod api;
@@ -28,8 +39,20 @@ async fn main() -> std::io::Result<()> {
 
     info!("lancement du server");
 
-    // todos aggregat
     let authentication_component = Arc::new(AuthenticationComponent::new().unwrap());
+    let api_key_dao = Arc::new(
+        Mutex::new(
+            MongoApiKeyDAO::new("seedv2todos", "todos_api_key").await
+        )
+    );
+    let api_key_repository: Arc<MongoEntityRepository<ApiKeyDbo>> = Arc::new(
+        MongoApiKeyRepository {
+            dao: api_key_dao.clone()
+        }
+    );
+    let api_key_service: Arc<dyn ApiKeyService> = Arc::new(ApiKeyServiceImpl { repo: api_key_repository.clone() });
+
+    // todos aggregat
     let todo_component = TodosComponent::new(&authentication_component.clone()).await;
 
     let openapi = ApiDoc::openapi();
@@ -64,6 +87,9 @@ async fn main() -> std::io::Result<()> {
             .app_data(
                 web::Data::new(Arc::clone(&todo_component.service))
             )
+            .app_data(
+                web::Data::new(api_key_service.clone())
+            )
             .service(fetch_one_event)
             .service(fetch_one_event_event)
             .service(fetch_many_events)
@@ -72,6 +98,7 @@ async fn main() -> std::io::Result<()> {
             .service(update_one_event)
             .service(disable_one_event)
             .service(exemple_api_key)
+            .service(create_api_key)
     })
         .workers(2)
         .bind((api_address.clone(), api_port.clone()))?

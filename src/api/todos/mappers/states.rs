@@ -1,9 +1,7 @@
 use crate::api::todos::todos_dbo::TodoDboState;
-use crate::core::todos::data::states::todo_disable::TodoDisable;
 use crate::core::todos::data::states::todo_create::TodoCreate;
+use crate::core::todos::data::states::todo_disable::TodoDisable;
 use crate::core::todos::data::states::TodosStates;
-use framework_cqrs_lib::cqrs::core::data::Entity;
-use framework_cqrs_lib::cqrs::infra::daos::dbos::EntityDBO;
 
 impl From<TodoDboState> for TodosStates {
     fn from(value: TodoDboState) -> Self {
@@ -27,15 +25,6 @@ impl From<TodoDboState> for TodosStates {
     }
 }
 
-pub fn from_todo_states_to_todo_states_dbo(entity: Entity<TodosStates, String>) -> EntityDBO<TodoDboState, String> {
-    EntityDBO {
-        id_mongo: None,
-        version: entity.version,
-        entity_id: entity.entity_id,
-        data: entity.data.into(),
-    }
-}
-
 impl From<TodosStates> for TodoDboState {
     fn from(value: TodosStates) -> Self {
         match value {
@@ -53,13 +42,5 @@ impl From<TodosStates> for TodoDboState {
                 }
             }
         }
-    }
-}
-
-pub fn from_todo_state_dbo_to_entity(dbo: EntityDBO<TodoDboState, String>) -> Entity<TodosStates, String> {
-    Entity {
-        entity_id: dbo.entity_id,
-        data: dbo.data.into(),
-        version: dbo.version,
     }
 }

@@ -1,6 +1,9 @@
+use crate::core::framework::api_key::service::ApiKeyService;
+use crate::models::framework::api_key::commands::CreateApiKeyCommand;
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
 use framework_cqrs_lib::cqrs::infra::helpers::header_value::CanSanitizeHeader;
-use crate::models::framework::api_key::commands::CreateApiKeyCommand;
+use framework_cqrs_lib::cqrs::models::errors::Error;
+use std::sync::Arc;
 
 #[utoipa::path(
     responses(
@@ -12,11 +15,23 @@ use crate::models::framework::api_key::commands::CreateApiKeyCommand;
 )]
 #[post("/api-key/create")]
 pub async fn create_api_key(
-    _body: web::Json<CreateApiKeyCommand>,
+    body: web::Json<CreateApiKeyCommand>,
     _req: HttpRequest,
+    api_key_service: web::Data<Arc<dyn ApiKeyService>>,
 ) -> impl Responder {
-    // todo creer l'api key
-    HttpResponse::Ok().body(format!("not implemented"))
+    match api_key_service.clone()
+        .create_api_key(&body.name)
+        .await {
+        Ok(a) => HttpResponse::Ok().body(format!("your api key is : {}", a.key)),
+        Err(e) => {
+            match e {
+                Error::Http(e) => {
+                    HttpResponse::InternalServerError().body(format!("[{}]error {}", e.code, e.title))
+                }
+                _ => HttpResponse::InternalServerError().body(format!("unknown error"))
+            }
+        }
+    }
 }
 
 #[utoipa::path(

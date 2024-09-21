@@ -7,7 +7,7 @@ use framework_cqrs_lib::cqrs::core::data::Entity;
 use uuid::Uuid;
 
 #[async_trait]
-trait ApiKeyService {
+pub trait ApiKeyService: Sync + Send {
     async fn create_api_key(&self, name: &String) -> ResultErr<ApiKey> {
         match self.get_repo().fetch_one(name).await {
             Ok(Some(_)) => {
@@ -40,7 +40,7 @@ trait ApiKeyService {
                 version: Some(1u32)
             })
             .await
-            .map(|res| {
+            .map(|_| {
                 ApiKey::new(name, &next_api_key)
             })
     }

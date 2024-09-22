@@ -1,13 +1,11 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use framework_cqrs_lib::cqrs::core::data::Entity;
-use framework_cqrs_lib::cqrs::core::repositories::filter::{Expr, ExprGeneric, Filter, Operation};
-use framework_cqrs_lib::cqrs::core::repositories::query::{PaginationDef, Query};
-use framework_cqrs_lib::cqrs::models::errors::{Error, ErrorHttpCustom, ResultErr};
-use uuid::Uuid;
 use crate::core::framework::api_key::data::ApiKey;
 use crate::core::framework::api_key::repository::ApiKeyRepository;
 use crate::core::framework::api_key::services::api_key_service::ApiKeyService;
+use async_trait::async_trait;
+use framework_cqrs_lib::cqrs::core::data::Entity;
+use framework_cqrs_lib::cqrs::models::errors::{Error, ErrorHttpCustom, ResultErr};
+use std::sync::Arc;
+use uuid::Uuid;
 
 pub struct ImplApiKeyService {
     pub repo: Arc<dyn ApiKeyRepository>,

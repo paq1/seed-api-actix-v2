@@ -1,15 +1,6 @@
-use std::sync::Arc;
-use crate::core::framework::api_key::repository::ApiKeyRepository;
-use crate::core::framework::api_key::service::ApiKeyService;
+use crate::core::framework::api_key::service::{ApiKeyService, ImplApiKeyService};
 
-pub struct ApiKeyServiceImpl {
-    pub repo: Arc<dyn ApiKeyRepository>,
-}
 
-// impl ApiKeyRepository for Mon
-
-impl ApiKeyService for ApiKeyServiceImpl {
-    fn get_repo(&self) -> Arc<dyn ApiKeyRepository> {
-        self.repo.clone()
-    }
+async fn toto(apik: ImplApiKeyService) {
+    let c = apik.create_api_key(&"xxx".to_string()).await;
 }

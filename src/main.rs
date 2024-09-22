@@ -14,13 +14,13 @@ use api::todos::routes::write_routes::{insert_one_event, update_one_event};
 use crate::api::framework::api_key::dao::MongoApiKeyDAO;
 use crate::api::framework::api_key::dbo::ApiKeyDbo;
 use crate::api::framework::api_key::mongo_repository::MongoApiKeyRepository;
-use crate::api::framework::api_key::service::ApiKeyServiceImpl;
+
 use crate::api::swagger::ApiDoc;
 use crate::api::todos::routes::exemple_wit_api_key_routes::{create_api_key, exemple_api_key};
 use crate::api::todos::routes::read_routes::{fetch_events_events, fetch_one_event_event};
 use crate::api::todos::routes::write_routes::disable_one_event;
 use crate::api::todos::todos_component::TodosComponent;
-use crate::core::framework::api_key::service::ApiKeyService;
+use crate::core::framework::api_key::service::{ApiKeyService, ImplApiKeyService};
 use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
 
 
@@ -50,7 +50,7 @@ async fn main() -> std::io::Result<()> {
             dao: api_key_dao.clone()
         }
     );
-    let api_key_service: Arc<dyn ApiKeyService> = Arc::new(ApiKeyServiceImpl { repo: api_key_repository.clone() });
+    let api_key_service: Arc<dyn ApiKeyService> = Arc::new(ImplApiKeyService { repo: api_key_repository.clone() });
 
     // todos aggregat
     let todo_component = TodosComponent::new(&authentication_component.clone()).await;

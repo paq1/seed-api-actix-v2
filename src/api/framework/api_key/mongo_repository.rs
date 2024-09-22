@@ -1,3 +1,4 @@
+use async_trait::async_trait;
 use crate::api::framework::api_key::dbo::ApiKeyDbo;
 use framework_cqrs_lib::cqrs::infra::repositories::mongo_entity_repository::{CanTransform, MongoEntityRepository};
 use crate::core::framework::api_key::data::ApiKey;
@@ -5,6 +6,7 @@ use crate::core::framework::api_key::repository::ApiKeyRepository;
 
 pub type MongoApiKeyRepository = MongoEntityRepository<ApiKeyDbo>;
 
+#[async_trait]
 impl ApiKeyRepository for MongoApiKeyRepository {}
 
 impl CanTransform<ApiKeyDbo> for ApiKey {

@@ -6,6 +6,9 @@ edition = "2021"
 [target.x86_64-unknown-linux-musl.dependencies]
 openssl-sys = "0.9.66"
 
+[dev-dependencies]
+mockall = "0.13.0"
+
 [dependencies]
 env_logger = "0.11.5"
 framework-cqrs-lib = "0.4.0"
@@ -25,7 +28,7 @@ reqwest = { version = "0.12", features = ["json"] }
 easy-auth = "0.3.0"
 passwords = { version = "3.1.16", features = ["crypto", "common-password"]}
 log = "0.4.22"
-
+tokio = { version = "1.40.0", features = ["full"] }
 
 [dependencies.mongodb]
 version = "3.0.0"

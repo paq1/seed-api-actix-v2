@@ -907,9 +907,9 @@ checksum = "6c2141d6d6c8512188a7891b4b01590a45f6dac67afb4f255c4124dbb86d4eaa"
 
 [[package]]
 name = "framework-cqrs-lib"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87b1d24115667c2772e286dcc5ab3f3d38ea5eb1d71acd8cda13834b05f9e561"
+checksum = "9a3d29203141fb6a6ffe60a33c38c238daade47cd7b357ffebfe16d14f746aba"
 dependencies = [
  "actix-web",
  "async-trait",
@@ -923,6 +923,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "tokio",
  "utoipa",
  "utoipa-swagger-ui",
  "uuid",

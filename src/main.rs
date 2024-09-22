@@ -1,34 +1,25 @@
-use futures::lock::Mutex;
 use std::sync::Arc;
 
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
-
-
+use framework_cqrs_lib::cqrs::infra::api_key::component::ApiKeyComponent;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 use api::todos::routes::read_routes::{fetch_many_events, fetch_one_event};
 use api::todos::routes::write_routes::{insert_one_event, update_one_event};
 
-use crate::api::framework::api_key::dao::MongoApiKeyDAO;
-use crate::api::framework::api_key::dbo::ApiKeyDbo;
-use crate::api::framework::api_key::mongo_repository::MongoApiKeyRepository;
 
 use crate::api::swagger::ApiDoc;
 use crate::api::todos::routes::exemple_wit_api_key_routes::{create_api_key, exemple_api_key};
 use crate::api::todos::routes::read_routes::{fetch_events_events, fetch_one_event_event};
 use crate::api::todos::routes::write_routes::disable_one_event;
 use crate::api::todos::todos_component::TodosComponent;
-use crate::core::framework::api_key::services::api_key_service::ApiKeyService;
-use crate::core::framework::api_key::services::impl_api_key_service::ImplApiKeyService;
 use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
 
 
-use framework_cqrs_lib::cqrs::infra::repositories::mongo_entity_repository::MongoEntityRepository;
 use framework_cqrs_lib::cqrs::models::errors::StandardHttpError;
 use log::info;
-use crate::api::framework::api_key::component::ApiKeyComponent;
 
 mod core;
 mod api;
@@ -43,7 +34,7 @@ async fn main() -> std::io::Result<()> {
 
     let authentication_component = Arc::new(AuthenticationComponent::new().unwrap());
     let api_key_component = Arc::new(ApiKeyComponent::new(
-        "seedv2todos", "todo"
+        "seedv2todos", "todo",
     ).await);
 
     // todos aggregat

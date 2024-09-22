@@ -1,7 +1,7 @@
-use crate::core::framework::api_key::services::api_key_service::ApiKeyService;
-use crate::models::framework::api_key::commands::CreateApiKeyCommand;
 use actix_web::{post, web, HttpRequest, HttpResponse, Responder};
+use framework_cqrs_lib::cqrs::core::api_key::services::api_key_service::ApiKeyService;
 use framework_cqrs_lib::cqrs::infra::helpers::header_value::CanSanitizeHeader;
+use framework_cqrs_lib::cqrs::models::api_key::commands::CreateApiKeyCommand;
 use framework_cqrs_lib::cqrs::models::errors::Error;
 use std::sync::Arc;
 

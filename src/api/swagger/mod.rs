@@ -15,6 +15,7 @@ use framework_cqrs_lib::cqrs::core::repositories::query::{InfoPaged, Page};
 use framework_cqrs_lib::cqrs::models::jsonapi::ManyView;
 use framework_cqrs_lib::cqrs::models::views::command_handler_view::ApiView;
 use framework_cqrs_lib::cqrs::models::views::DataWrapperView;
+use crate::models::framework::api_key::commands::CreateApiKeyCommand;
 
 #[derive(utoipa::OpenApi)]
 #[openapi(
@@ -30,6 +31,7 @@ use framework_cqrs_lib::cqrs::models::views::DataWrapperView;
     ),
     components(
         schemas(
+            CreateApiKeyCommand,
             CreateTodoCommand,
             TodoCreatedView,
             ManyView < TodoViewState >,

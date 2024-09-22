@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 #[utoipa::path(
     responses(
-    (status = 201, description = "creer une api key pour une application", body = String),
+    (status = 201, description = "creer une api key pour une application", body = CreateApiKeyCommand),
     ),
     security(
     ("bearer_auth" = [])
@@ -45,6 +45,7 @@ pub async fn create_api_key(
 #[post("/todos/exemple-api-key")]
 pub async fn exemple_api_key(
     req: HttpRequest,
+    api_key_service: web::Data<Arc<dyn ApiKeyService>>,
 ) -> impl Responder {
     let maybe_api_key: Option<String> = req
         .headers()
@@ -58,7 +59,17 @@ pub async fn exemple_api_key(
 
     match maybe_api_key {
         Some(api_key) => {
-            HttpResponse::Ok().body(format!("api key : {api_key}"))
+            match api_key_service.is_authorized(&api_key).await {
+                Ok(true) => {
+                    HttpResponse::Ok().body(format!("félicitation vous etes authoriser ici"))
+                }
+                Ok(false) => {
+                    HttpResponse::Ok().body(format!("vous n'etes pas authorisé ici"))
+                }
+                _ => {
+                    HttpResponse::InternalServerError().body(format!("erreur lors de l'authentification"))
+                }
+            }
         }
         None => {
             HttpResponse::Ok().body(format!("authentification sans api key"))

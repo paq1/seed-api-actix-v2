@@ -11,7 +11,7 @@ pub trait ApiKeyRepository: RepositoryEntity<ApiKey, String> {
         let query = Query {
             pagination: PaginationDef::default(),
             filter: Filter::Expr(Expr::ExprStr(ExprGeneric {
-                field: "key".to_string(),
+                field: "data.key".to_string(),
                 operation: Operation::EqualsTo,
                 head: key.to_string()
             }))

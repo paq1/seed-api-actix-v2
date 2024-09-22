@@ -20,7 +20,8 @@ use crate::api::todos::routes::exemple_wit_api_key_routes::{create_api_key, exem
 use crate::api::todos::routes::read_routes::{fetch_events_events, fetch_one_event_event};
 use crate::api::todos::routes::write_routes::disable_one_event;
 use crate::api::todos::todos_component::TodosComponent;
-use crate::core::framework::api_key::service::{ApiKeyService, ImplApiKeyService};
+use crate::core::framework::api_key::services::api_key_service::ApiKeyService;
+use crate::core::framework::api_key::services::impl_api_key_service::ImplApiKeyService;
 use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
 
 

@@ -1,17 +1,13 @@
 use std::sync::Arc;
-use crate::core::framework::api_key::data::ApiKey;
 use async_trait::async_trait;
 use framework_cqrs_lib::cqrs::core::data::Entity;
+use framework_cqrs_lib::cqrs::core::repositories::filter::{Expr, ExprGeneric, Filter, Operation};
+use framework_cqrs_lib::cqrs::core::repositories::query::{PaginationDef, Query};
 use framework_cqrs_lib::cqrs::models::errors::{Error, ErrorHttpCustom, ResultErr};
 use uuid::Uuid;
+use crate::core::framework::api_key::data::ApiKey;
 use crate::core::framework::api_key::repository::ApiKeyRepository;
-
-
-#[async_trait]
-pub trait ApiKeyService: Sync + Send {
-    async fn create_api_key(&self, name: &String) -> ResultErr<ApiKey>;
-}
-
+use crate::core::framework::api_key::services::api_key_service::ApiKeyService;
 
 pub struct ImplApiKeyService {
     pub repo: Arc<dyn ApiKeyRepository>,
@@ -38,6 +34,12 @@ impl ApiKeyService for ImplApiKeyService {
             }
             Err(e) => Err(e)
         }
+    }
+
+    async fn is_authorized(&self, key: &String) -> ResultErr<bool> {
+        self.repo
+            .fetch_by_key(key).await
+            .map(|api_keys| api_keys.len() > 0)
     }
 }
 

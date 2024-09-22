@@ -28,6 +28,7 @@ use framework_cqrs_lib::cqrs::infra::authentication::AuthenticationComponent;
 use framework_cqrs_lib::cqrs::infra::repositories::mongo_entity_repository::MongoEntityRepository;
 use framework_cqrs_lib::cqrs::models::errors::StandardHttpError;
 use log::info;
+use crate::api::framework::api_key::component::ApiKeyComponent;
 
 mod core;
 mod api;
@@ -41,17 +42,9 @@ async fn main() -> std::io::Result<()> {
     info!("lancement du server");
 
     let authentication_component = Arc::new(AuthenticationComponent::new().unwrap());
-    let api_key_dao = Arc::new(
-        Mutex::new(
-            MongoApiKeyDAO::new("seedv2todos", "todos_api_key").await
-        )
-    );
-    let api_key_repository: Arc<MongoEntityRepository<ApiKeyDbo>> = Arc::new(
-        MongoApiKeyRepository {
-            dao: api_key_dao.clone()
-        }
-    );
-    let api_key_service: Arc<dyn ApiKeyService> = Arc::new(ImplApiKeyService { repo: api_key_repository.clone() });
+    let api_key_component = Arc::new(ApiKeyComponent::new(
+        "seedv2todos", "todo"
+    ).await);
 
     // todos aggregat
     let todo_component = TodosComponent::new(&authentication_component.clone()).await;
@@ -89,7 +82,7 @@ async fn main() -> std::io::Result<()> {
                 web::Data::new(Arc::clone(&todo_component.service))
             )
             .app_data(
-                web::Data::new(api_key_service.clone())
+                web::Data::new(api_key_component.service.clone())
             )
             .service(fetch_one_event)
             .service(fetch_one_event_event)

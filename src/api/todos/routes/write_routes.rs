@@ -15,6 +15,7 @@ use framework_cqrs_lib::cqrs::models::errors::StandardHttpError;
 use uuid::Uuid;
 
 #[utoipa::path(
+    tag = "todos",
     request_body = CreateTodoCommand,
     responses(
     (status = 201, description = "mettre la description ici", body = String),
@@ -49,6 +50,7 @@ pub async fn insert_one_event(
 }
 
 #[utoipa::path(
+    tag = "todos",
     request_body = UpdateTodoCommand,
     responses(
     (status = 200, description = "fait ca", body = String),
@@ -89,6 +91,7 @@ pub async fn update_one_event(
 }
 
 #[utoipa::path(
+    tag = "todos",
     request_body = DisableTodoCommand,
     responses(
     (status = 200, description = "???", body = String),

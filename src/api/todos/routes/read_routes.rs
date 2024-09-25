@@ -20,6 +20,7 @@ use framework_cqrs_lib::cqrs::models::jsonapi::CanBeView;
 use framework_cqrs_lib::cqrs::models::views::entities::EntityView;
 
 #[utoipa::path(
+    tag = "todos",
     responses(
         (status = 200, description = "fait ca", body = Paged<EntityView<TodoViewState>>)
     ),
@@ -58,6 +59,7 @@ pub async fn fetch_many_events(
 }
 
 #[utoipa::path(
+    tag = "todos",
     responses(
         (
         status = 200,
@@ -89,6 +91,7 @@ pub async fn fetch_one_event(
 }
 
 #[utoipa::path(
+    tag = "todos",
     responses(
         (
         status = 200,
@@ -152,6 +155,7 @@ pub async fn fetch_events_events(
 
 
 #[utoipa::path(
+    tag = "todos",
     responses(
         (
         status = 200,

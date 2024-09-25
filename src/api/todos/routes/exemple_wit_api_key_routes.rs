@@ -6,6 +6,7 @@ use framework_cqrs_lib::cqrs::models::errors::Error;
 use std::sync::Arc;
 
 #[utoipa::path(
+    tag = "api key",
     responses(
     (status = 201, description = "creer une api key pour une application", body = CreateApiKeyCommand),
     ),
@@ -35,6 +36,7 @@ pub async fn create_api_key(
 }
 
 #[utoipa::path(
+    tag = "todos exemple api key",
     responses(
     (status = 201, description = "mettre la description ici", body = String),
     ),

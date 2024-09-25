@@ -1,3 +1,5 @@
+pub mod core;
+
 #[test]
 fn example_test() {
     // given

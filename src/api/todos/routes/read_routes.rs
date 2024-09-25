@@ -21,6 +21,7 @@ use framework_cqrs_lib::cqrs::models::views::entities::EntityView;
 
 #[utoipa::path(
     tag = "todos",
+    path = "/todos",
     responses(
         (status = 200, description = "fait ca", body = Paged<EntityView<TodoViewState>>)
     ),
@@ -28,7 +29,7 @@ use framework_cqrs_lib::cqrs::models::views::entities::EntityView;
         TodoQuery
     )
 )]
-#[get("/todos")]
+#[get("")]
 pub async fn fetch_many_events(
     store: web::Data<Arc<dyn CustomTodosRepository>>,
     http_error: web::Data<StandardHttpError>,
@@ -60,6 +61,7 @@ pub async fn fetch_many_events(
 
 #[utoipa::path(
     tag = "todos",
+    path = "/todos/{entity_id}",
     responses(
         (
         status = 200,
@@ -68,7 +70,7 @@ pub async fn fetch_many_events(
         )
     )
 )]
-#[get("/todos/{entity_id}")]
+#[get("/{entity_id}")]
 pub async fn fetch_one_event(
     path: web::Path<String>,
     store: web::Data<Arc<dyn CustomTodosRepository>>,
@@ -92,6 +94,7 @@ pub async fn fetch_one_event(
 
 #[utoipa::path(
     tag = "todos",
+    path = "/todos/{entity_id}/events",
     responses(
         (
         status = 200,
@@ -103,7 +106,7 @@ pub async fn fetch_one_event(
         TodoQuery
     )
 )]
-#[get("/todos/{entity_id}/events")]
+#[get("/{entity_id}/events")]
 pub async fn fetch_events_events(
     path: web::Path<String>,
     journal: web::Data<Arc<dyn RepositoryEvents<TodosEvents, String>>>,
@@ -156,6 +159,7 @@ pub async fn fetch_events_events(
 
 #[utoipa::path(
     tag = "todos",
+    path = "/todos/{entity_id}/events/{event_id}",
     responses(
         (
         status = 200,
@@ -164,7 +168,7 @@ pub async fn fetch_events_events(
         )
     )
 )]
-#[get("/todos/{entity_id}/events/{event_id}")]
+#[get("/{entity_id}/events/{event_id}")]
 pub async fn fetch_one_event_event(
     path: web::Path<(String, String)>,
     journal: web::Data<Arc<dyn RepositoryEvents<TodosEvents, String>>>,

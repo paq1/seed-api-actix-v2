@@ -16,6 +16,7 @@ use uuid::Uuid;
 
 #[utoipa::path(
     tag = "todos",
+    path = "/todos/commands/create",
     request_body = CreateTodoCommand,
     responses(
     (status = 201, description = "mettre la description ici", body = String),
@@ -24,7 +25,7 @@ use uuid::Uuid;
     ("bearer_auth" = [])
     )
 )]
-#[post("/todos/commands/create")]
+#[post("/commands/create")]
 pub async fn insert_one_event(
     body: web::Json<CreateTodoCommand>,
     engine: web::Data<Arc<Engine<TodosStates, TodosCommands, TodosEvents>>>,
@@ -51,6 +52,7 @@ pub async fn insert_one_event(
 
 #[utoipa::path(
     tag = "todos",
+    path = "/todos/{entity_id}/commands/update",
     request_body = UpdateTodoCommand,
     responses(
     (status = 200, description = "fait ca", body = String),
@@ -59,7 +61,7 @@ pub async fn insert_one_event(
     ("bearer_auth" = [])
     )
 )]
-#[put("/todos/{entity_id}/commands/update")]
+#[put("/{entity_id}/commands/update")]
 pub async fn update_one_event(
     path: web::Path<String>,
     req: HttpRequest,
@@ -92,6 +94,7 @@ pub async fn update_one_event(
 
 #[utoipa::path(
     tag = "todos",
+    path = "/todos/{entity_id}/commands/disable",
     request_body = DisableTodoCommand,
     responses(
     (status = 200, description = "???", body = String),
@@ -100,7 +103,7 @@ pub async fn update_one_event(
     ("bearer_auth" = [])
     )
 )]
-#[put("/todos/{entity_id}/commands/disable")]
+#[put("/{entity_id}/commands/disable")]
 pub async fn disable_one_event(
     path: web::Path<String>,
     req: HttpRequest,

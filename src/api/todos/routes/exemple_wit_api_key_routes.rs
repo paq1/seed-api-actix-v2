@@ -7,6 +7,7 @@ use std::sync::Arc;
 
 #[utoipa::path(
     tag = "api key",
+    path = "/todos/api-key/create",
     responses(
     (status = 201, description = "creer une api key pour une application", body = CreateApiKeyCommand),
     ),
@@ -37,6 +38,7 @@ pub async fn create_api_key(
 
 #[utoipa::path(
     tag = "todos exemple api key",
+    path = "/todos/exemple-api-key",
     responses(
     (status = 201, description = "mettre la description ici", body = String),
     ),
@@ -44,7 +46,7 @@ pub async fn create_api_key(
     ("api_key_auth" = [])
     )
 )]
-#[post("/todos/exemple-api-key")]
+#[post("/exemple-api-key")]
 pub async fn exemple_api_key(
     req: HttpRequest,
     api_key_service: web::Data<Arc<dyn ApiKeyService>>,

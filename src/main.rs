@@ -62,28 +62,31 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(standard_http_error))
             .app_data(web::Data::new(authentication_component.jwt_token_decoder_service.clone()))
             // todos services
-            .app_data(web::Data::new(Arc::clone(&todo_component.engine)))
-            .app_data(
-                web::Data::new(Arc::clone(&todo_component.store))
+            .service(
+                web::scope("/todos")
+                    .service(create_api_key)
+                    .service(fetch_one_event)
+                    .service(fetch_one_event_event)
+                    .service(fetch_many_events)
+                    .service(fetch_events_events)
+                    .service(insert_one_event)
+                    .service(update_one_event)
+                    .service(disable_one_event)
+                    .service(exemple_api_key)
+                    .app_data(web::Data::new(Arc::clone(&todo_component.engine)))
+                    .app_data(
+                        web::Data::new(Arc::clone(&todo_component.store))
+                    )
+                    .app_data(
+                        web::Data::new(Arc::clone(&todo_component.journal))
+                    )
+                    .app_data(
+                        web::Data::new(Arc::clone(&todo_component.service))
+                    )
+                    .app_data(
+                        web::Data::new(api_key_component.service.clone())
+                    )
             )
-            .app_data(
-                web::Data::new(Arc::clone(&todo_component.journal))
-            )
-            .app_data(
-                web::Data::new(Arc::clone(&todo_component.service))
-            )
-            .app_data(
-                web::Data::new(api_key_component.service.clone())
-            )
-            .service(fetch_one_event)
-            .service(fetch_one_event_event)
-            .service(fetch_many_events)
-            .service(fetch_events_events)
-            .service(insert_one_event)
-            .service(update_one_event)
-            .service(disable_one_event)
-            .service(exemple_api_key)
-            .service(create_api_key)
     })
         .workers(2)
         .bind((api_address.clone(), api_port.clone()))?
